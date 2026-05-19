@@ -121,7 +121,7 @@
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-                <script>
+                <!-- <script>
                     document.addEventListener("DOMContentLoaded", function() {
 
                         const bookings = JSON.parse('<%- JSON.stringify(bookings || []) %>');
@@ -158,4 +158,51 @@
                     }
                 </style>
 
+    </div> -->
+
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const bookings = <%- JSON.stringify(bookings || []) %>;
+
+                        bookings.forEach(b => {
+                            if (!b.listing || !b.listing.geometry || !b.listing.geometry.lat) return;
+
+                            const mapId = "map-" + b._id;
+                            const container = document.getElementById(mapId);
+
+                            if (!container) return; // Guard clause
+
+                            const map = L.map(mapId).setView(
+                                [b.listing.geometry.lat, b.listing.geometry.lng],
+                                13
+                            );
+
+                            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                                attribution: "&copy; OpenStreetMap contributors"
+                            }).addTo(map);
+
+                            L.marker([b.listing.geometry.lat, b.listing.geometry.lng])
+                                .addTo(map)
+                                .bindPopup("<b>" + b.listing.title + "</b><br>" + b.listing.location);
+
+                            // ⭐ FORCE LEAFLET TO RE-CALCULATE MAP SIZE DIMENSIONS
+                            setTimeout(() => {
+                                map.invalidateSize();
+                            }, 200);
+                        });
+                    });
+                </script>
+                <style>
+                    .booking-map {
+                        height: 250px;
+                        width: 100%;
+                        display: block;
+                        /* Ensures block layout dimensions apply */
+                        z-index: 1;
+                        /* Keeps map tiles below modal popups but above card background */
+                        border-radius: 10px;
+                        border: 1px solid #ddd;
+                    }
+                </style>
     </div>
