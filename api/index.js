@@ -1,4 +1,6 @@
-const { app, connectDB } = require("../app");
+const app = require("../app");
+
+module.exports = app;
 
 module.exports = async(req, res) => {
 

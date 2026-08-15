@@ -160,7 +160,4 @@ async function connectDB() {
 
 // ================= VERCEL EXPORT =================
 
-module.exports = {
-    app,
-    connectDB
-};
+module.exports = app;
