@@ -140,41 +140,26 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong" } = err;
     res.status(statusCode).render("listings/error", { statusCode, message });
-}); // ================= MONGODB CONNECTION =================
+}); //  SERVER 
 
 const dburl = process.env.ATLASDB_URL;
 
-async function connectDB() {
-
-    if (mongoose.connection.readyState === 1) {
-        return;
-    }
-
-    await mongoose.connect(dburl, {
-        serverSelectionTimeoutMS: 30000
-    });
-
-    console.log("✅ Connected to MongoDB Atlas");
-}
-// ================= CONNECT DATABASE BEFORE REQUEST =================
-
-app.use(async(req, res, next) => {
-
+async function startServer() {
     try {
+        await mongoose.connect(dburl, {
+            serverSelectionTimeoutMS: 30000
+        });
 
-        await connectDB();
+        console.log("✅ Connected to MongoDB Atlas");
 
-        next();
+        app.listen(8080, "0.0.0.0", () => {
+            console.log("🚀 Server running on http://localhost:8080");
+        });
 
     } catch (err) {
-
-        console.error("❌ DATABASE CONNECTION ERROR:", err);
-
-        next(err);
+        console.log("❌ DATABASE CONNECTION FAILED");
+        console.log(err);
     }
+}
 
-});
-
-// ================= VERCEL EXPORT =================
-
-module.exports = app;
+startServer();
