@@ -5,7 +5,7 @@ const Listing = require("../models/listing");
 const Booking = require("../models/booking");
 const User = require("../models/user");
 
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn } = require("../authMiddleware");
 
 const razorpay = require("../utils/razorpay");
 const crypto = require("crypto");

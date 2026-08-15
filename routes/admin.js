@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
-const { isAdmin, isLoggedIn } = require("../middleware.js");
+const { isAdmin, isLoggedIn } = require("../authMiddleware.js");
 const Listing = require("../models/listing");
 const Booking = require("../models/booking");
 

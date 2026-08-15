@@ -3,7 +3,7 @@ const router = express.Router();
 const Booking = require("../models/booking");
 
 const Listing = require("../models/listing");
-const { isLoggedIn, isHost } = require("../middleware.js");
+const { isLoggedIn, isHost } = require("../authMiddleware.js");
 
 
 router.get("/dashboard", isLoggedIn, isHost, async(req, res) => {

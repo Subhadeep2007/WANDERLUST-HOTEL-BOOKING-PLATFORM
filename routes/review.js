@@ -6,7 +6,7 @@ const Review = require("../models/review");
 const wrapAsync = require("../utils/wrapAsync");
 const ExpressError = require("../utils/ExpressError");
 const { reviewSchema } = require("../schema");
-const { isLoggedIn, isReviewAuthor } = require("../middleware.js");
+const { isLoggedIn, isReviewAuthor } = require("../authMiddleware.js");
 
 
 //  VALIDATE REVIEW 

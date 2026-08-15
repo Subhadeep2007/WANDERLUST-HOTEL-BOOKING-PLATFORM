@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { isLoggedIn } = require("../middleware.js");
+const { isLoggedIn } = require("../authMiddleware.js");
 
 router.get("/terms", isLoggedIn, (req, res) => {
     res.render("static/terms");

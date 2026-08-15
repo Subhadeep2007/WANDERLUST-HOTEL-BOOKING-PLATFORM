@@ -7,7 +7,7 @@ const sendEmail = require("../utils/sendEmail");
 const { userSchema, forgotSchema, resetSchema, otpSchema, signupSchema } = require("../schema");
 const {
     saveReditectUrl
-} = require("../middleware.js")
+} = require("../authMiddleware.js")
 
 const multer = require("multer");
 const { storage } = require("../utils/cloudinary");
@@ -16,7 +16,7 @@ const upload = multer({ storage });
 
 const {
     isLoggedIn
-} = require("../middleware.js");
+} = require("../authMiddleware.js");
 
 
 
