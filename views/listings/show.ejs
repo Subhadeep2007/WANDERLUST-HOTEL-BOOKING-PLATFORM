@@ -16,16 +16,44 @@
                             <%= listing.title %>
                         </h3>
 
-                        <!-- Seller -->
-                        <p>
-                            <b>Seller:</b>
-                            <% if(listing.owner && listing.owner.email){ %>
-                                <% let name = listing.owner.email.split("@")[0]; %>
-                                    <%= name.charAt(0).toUpperCase() + name.slice(1) %>
+                        <!-- SELLER -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+
+                                <h5 class="mb-3">
+                                    <i class="fa-solid fa-store"></i> Seller
+                                </h5>
+
+                                <div class="d-flex align-items-center gap-3">
+
+                                    <% if(listing.owner && listing.owner.profilePicture && listing.owner.profilePicture.url){ %>
+
+                                        <img src="<%= listing.owner.profilePicture.url %>" alt="Seller Profile" class="rounded-circle" style="width:65px;height:65px;object-fit:cover;">
+
                                         <% } else { %>
-                                            Unknown Host
+
+                                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:65px;height:65px;font-size:25px;">
+                                                <i class="fa-solid fa-user"></i>
+                                            </div>
+
                                             <% } %>
-                        </p>
+
+                                                <div>
+
+                                                    <h6 class="mb-1">
+                                                        <%= listing.owner ? listing.owner.username : "Unknown Host" %>
+                                                    </h6>
+
+                                                    <p class="text-muted mb-0">
+                                                        <%= listing.owner ? listing.owner.email : "Email unavailable" %>
+                                                    </p>
+
+                                                </div>
+
+                                </div>
+
+                            </div>
+                        </div>
 
                         <!-- Description -->
                         <p class="text-muted">

@@ -3,6 +3,13 @@ const Joi = require("joi");
 // SIGNUP
 const userSchema = Joi.object({
 
+
+    username: Joi.string()
+        .min(3)
+        .max(30)
+        .trim()
+        .required(),
+
     email: Joi.string()
         .email({ tlds: { allow: false } })
         .required(),
@@ -86,6 +93,13 @@ const listingSchema = Joi.object({
 
 // SIGNUP (OTP STEP)
 const signupSchema = Joi.object({
+
+
+    username: Joi.string()
+        .min(3)
+        .max(30)
+        .trim()
+        .required(),
     email: Joi.string()
         .email({ tlds: { allow: false } })
         .required(),

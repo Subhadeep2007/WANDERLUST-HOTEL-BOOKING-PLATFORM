@@ -1,94 +1,234 @@
 <% layout("/layouts/boilerplate") %>
 
     <div class="container mt-5">
+
         <h2 class="mb-4 text-center">Host Dashboard</h2>
 
         <% if(bookings.length === 0){ %>
+
             <div class="alert alert-info text-center">
                 No bookings on your properties yet.
             </div>
+
             <% } %>
+
 
                 <div class="row">
 
                     <% bookings.forEach(b => { %>
 
                         <div class="col-md-6 col-lg-4">
+
                             <div class="card shadow-sm m-3">
 
-                                <!-- SNAPSHOT IMAGE -->
+                                <!-- ================= LISTING IMAGE ================= -->
+
                                 <img src="<%= b.listing?.image?.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945' %>" class="card-img-top" style="height:200px; object-fit:cover;">
 
 
                                 <div class="card-body">
 
-                                    <!-- SNAPSHOT TITLE -->
+                                    <!-- ================= LISTING DETAILS ================= -->
+
                                     <h5 class="card-title">
-                                        <%= b.listingTitle %>
+                                        <%= b.listing?.title || "Property Removed" %>
                                     </h5>
 
-                                    <!-- SNAPSHOT LOCATION -->
-                                    <p class="text-muted mb-1">
+
+                                    <p class="text-muted mb-3">
+
                                         <i class="fa-solid fa-location-dot text-danger"></i>
-                                        <%= b.listingLocation %>,
-                                            <%= b.listingCountry %>
+
+                                        <%= b.listing?.location || "N/A" %>
+
+                                            <% if(b.listing?.country){ %>
+                                                ,
+                                                <%= b.listing.country %>
+                                                    <% } %>
+
                                     </p>
 
-                                    <p><b>Booked By:</b>
-                                        <%= b.user ? b.user.email : "Unknown / Deleted User" %>
-                                    </p>
-
-                                    <p><b>Guests:</b>
-                                        <%= b.guests %>
-                                    </p>
-
-                                    <p>
-                                        <b>Room Type:</b>
-                                        <span class="badge bg-primary">
-                            <%= b.roomPlan %>
-                        </span>
-                                    </p>
-
-                                    <form action="/host/booking/<%= b._id %>?_method=DELETE" method="POST">
-                                        <button class="btn btn-danger btn-sm mt-2">
-                            Cancel Booking
-                        </button>
-                                    </form>
-
-                                    <p><b>From:</b>
-                                        <%= new Date(b.fromDate).toDateString() %>
-                                    </p>
-                                    <p><b>To:</b>
-                                        <%= new Date(b.toDate).toDateString() %>
-                                    </p>
 
                                     <hr>
 
-                                    <h5>Payment Info</h5>
-                                    <p>Room Price: ₹
-                                        <%= b.basePrice %>
-                                    </p>
-                                    <p>Platform Fee: ₹
-                                        <%= b.platformFee %>
-                                    </p>
-                                    <p>GST: ₹
-                                        <%= b.gst %>
-                                    </p>
 
-                                    <h5>Total Paid: ₹
-                                        <%= b.totalPrice %>
-                                    </h5>
+                                    <!-- ================= BOOKED BY ================= -->
 
-                                    <small>Payment ID: <%= b.paymentId || "N/A" %></small>
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="fa-solid fa-user"></i> Guest / Booked By
+                                    </h6>
 
-                                    <br><br>
-                                    <span class="badge bg-success">Confirmed</span>
+
+                                    <% if(b.user){ %>
+
+                                        <div class="d-flex align-items-center gap-3 mb-3">
+
+                                            <!-- GUEST PROFILE PICTURE -->
+
+                                            <% if(b.user.profilePicture && b.user.profilePicture.url){ %>
+
+                                                <img src="<%= b.user.profilePicture.url %>" alt="Guest Profile" class="rounded-circle" style="width:60px;height:60px;object-fit:cover;">
+
+                                                <% } else { %>
+
+                                                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:60px;height:60px;font-size:24px;">
+                                                        <i class="fa-solid fa-user"></i>
+                                                    </div>
+
+                                                    <% } %>
+
+
+                                                        <!-- GUEST INFORMATION -->
+
+                                                        <div>
+
+                                                            <p class="mb-1 fw-bold">
+                                                                <%= b.user.username || "Username unavailable" %>
+                                                            </p>
+
+                                                            <p class="mb-0 text-muted">
+                                                                <i class="fa-solid fa-envelope"></i>
+
+                                                                <%= b.user.email || "Email unavailable" %>
+                                                            </p>
+
+                                                        </div>
+
+                                        </div>
+
+
+                                        <% } else { %>
+
+                                            <p class="text-danger">
+                                                <i class="fa-solid fa-user-xmark"></i> Unknown / Deleted User
+                                            </p>
+
+                                            <% } %>
+
+
+                                                <!-- ================= GUESTS ================= -->
+
+                                                <p>
+                                                    <b>Guests:</b>
+                                                    <%= b.guests %>
+                                                </p>
+
+
+                                                <!-- ================= ROOM TYPE ================= -->
+
+                                                <p>
+
+                                                    <b>Room Type:</b>
+
+                                                    <span class="badge bg-primary">
+                                <%= b.roomPlan %>
+                            </span>
+
+                                                </p>
+
+
+                                                <!-- ================= DATES ================= -->
+
+                                                <p>
+                                                    <b>From:</b>
+                                                    <%= new Date(b.fromDate).toDateString() %>
+                                                </p>
+
+
+                                                <p>
+                                                    <b>To:</b>
+                                                    <%= new Date(b.toDate).toDateString() %>
+                                                </p>
+
+
+                                                <!-- ================= BOOKING STATUS ================= -->
+
+                                                <p>
+
+                                                    <b>Status:</b>
+
+                                                    <span class="badge <%= b.status === 'Cancelled' ? 'bg-danger' : 'bg-success' %>">
+    <%= b.status || "Confirmed" %>
+</span>
+                                                </p>
+
+
+                                                <hr>
+
+
+                                                <!-- ================= PAYMENT INFO ================= -->
+
+                                                <h5>
+                                                    <i class="fa-solid fa-credit-card"></i> Payment Info
+                                                </h5>
+
+
+                                                <p>
+                                                    <b>Room Price:</b> ₹
+                                                    <%= b.basePrice %>
+                                                </p>
+
+
+                                                <p>
+                                                    <b>Platform Fee:</b> ₹
+                                                    <%= b.platformFee %>
+                                                </p>
+
+
+                                                <p>
+                                                    <b>GST:</b> ₹
+                                                    <%= b.gst %>
+                                                </p>
+
+
+                                                <h5>
+                                                    Total Paid: ₹
+                                                    <%= b.totalPrice %>
+                                                </h5>
+
+
+                                                <p class="mb-1">
+
+                                                    <small>
+                                <b>Payment ID:</b>
+                                <%= b.paymentId || "N/A" %>
+                            </small>
+
+                                                </p>
+
+
+                                                <p class="mb-3">
+
+                                                    <small>
+                                <b>Order ID:</b>
+                                <%= b.orderId || "N/A" %>
+                            </small>
+
+                                                </p>
+
+
+                                                <!-- ================= CANCEL BOOKING ================= -->
+
+                                                <form action="/host/booking/<%= b._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+
+                                                    <button class="btn btn-danger btn-sm mt-2">
+
+                                <i class="fa-solid fa-xmark"></i>
+                                Cancel Booking
+
+                            </button>
+
+                                                </form>
+
 
                                 </div>
+
                             </div>
+
                         </div>
 
                         <% }) %>
 
                 </div>
+
     </div>

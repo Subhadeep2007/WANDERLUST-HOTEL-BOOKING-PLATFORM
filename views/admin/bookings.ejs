@@ -2,101 +2,390 @@
 
     <div class="container mt-5">
 
+        <h2 class="text-center mb-4">
+            All Platform Bookings
+        </h2>
 
-        <h2 class="text-center mb-4">All Platform Bookings</h2>
 
         <% if(bookings.length === 0){ %>
+
             <div class="alert alert-info text-center">
                 No bookings yet
             </div>
+
             <% } %>
+
 
                 <div class="row">
 
                     <% bookings.forEach(b => { %>
 
                         <div class="col-md-6 col-lg-4">
+
                             <div class="card shadow-sm m-3">
 
-                                <!-- ===== IMAGE ===== -->
+
+                                <!-- ================= LISTING IMAGE ================= -->
+
                                 <img src="<%= b.listing?.image?.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945' %>" class="card-img-top" style="height:200px; object-fit:cover;">
+
 
                                 <div class="card-body">
 
-                                    <!-- ===== TITLE ===== -->
+
+                                    <!-- ================= LISTING ================= -->
+
                                     <h5 class="card-title">
-                                        <%= b.listing?.title || "Property Removed" %>
+
+                                        <%= b.listing?.title ||
+                                "Property Removed" %>
+
                                     </h5>
 
-                                    <!-- ===== LOCATION ===== -->
+
                                     <p>
+
                                         <b>Location:</b>
-                                        <%= b.listing?.location || "N/A" %>,
-                                            <%= b.listing?.country || "" %>
+
+                                        <%= b.listing?.location ||
+                                "N/A" %>
+
+                                            <% if(b.listing?.country){ %>
+
+                                                ,
+                                                <%= b.listing.country %>
+
+                                                    <% } %>
+
                                     </p>
 
-                                    <!-- ===== HOST ===== -->
-                                    <p>
-                                        <b>Host Seller:</b>
-                                        <%= b.listing?.owner?.email 
-                        ? b.listing.owner.email.split("@")[0] 
-                        : "Host Deleted" %>
-                                            <br>
-                                            <small class="text-muted">
-                        <%= b.listing?.owner?.email || "" %>
-                    </small>
-                                    </p>
-
-                                    <!-- ===== USER WHO BOOKED ===== -->
-                                    <p>
-                                        <b>Booked By:</b>
-                                        <%= b.user?.email || "Deleted user" %>
-                                    </p>
-
-                                    <p><b>Guests:</b>
-                                        <%= b.guests %>
-                                    </p>
-
-                                    <p>
-                                        <b>From:</b>
-                                        <%= new Date(b.fromDate).toDateString() %>
-                                    </p>
-
-                                    <p>
-                                        <b>To:</b>
-                                        <%= new Date(b.toDate).toDateString() %>
-                                    </p>
 
                                     <hr>
 
-                                    <h6>Payment Info</h6>
 
-                                    <p>Room Price: ₹
-                                        <%= b.basePrice %>
-                                    </p>
-                                    <p>Platform Fee: ₹
-                                        <%= b.platformFee %>
-                                    </p>
-                                    <p>GST: ₹
-                                        <%= b.gst %>
-                                    </p>
+                                    <!-- ================= SELLER ================= -->
 
-                                    <h5>Total Paid: ₹
-                                        <%= b.totalPrice %>
-                                    </h5>
+                                    <h6 class="fw-bold mb-3">
 
-                                    <small>Payment ID: <%= b.paymentId || "N/A" %></small>
+                                        <i class="fa-solid fa-store"></i> Host Seller
 
-                                    <br><br>
-                                    <span class="badge bg-success">Confirmed</span>
+                                    </h6>
+
+
+                                    <% if(
+                            b.listing &&
+                            b.listing.owner
+                        ){ %>
+
+
+                                        <div class="d-flex align-items-center gap-3 mb-3">
+
+
+                                            <!-- SELLER PROFILE -->
+
+                                            <% if(
+                                    b.listing.owner.profilePicture &&
+                                    b.listing.owner.profilePicture.url
+                                ){ %>
+
+                                                <img src="<%= b.listing.owner.profilePicture.url %>" alt="Seller" class="rounded-circle" style="
+                                            width:60px;
+                                            height:60px;
+                                            object-fit:cover;
+                                        ">
+
+                                                <% } else { %>
+
+                                                    <div class="rounded-circle bg-secondary text-white
+                                        d-flex align-items-center justify-content-center" style="
+                                            width:60px;
+                                            height:60px;
+                                            font-size:24px;
+                                        ">
+
+                                                        <i class="fa-solid fa-user"></i>
+
+                                                    </div>
+
+                                                    <% } %>
+
+
+                                                        <!-- SELLER INFO -->
+
+                                                        <div>
+
+                                                            <p class="mb-1 fw-bold">
+
+                                                                <%= b.listing.owner.username ||
+                                            "Username unavailable" %>
+
+                                                            </p>
+
+
+                                                            <p class="mb-0 text-muted">
+
+                                                                <i class="fa-solid fa-envelope"></i>
+
+                                                                <%= b.listing.owner.email ||
+                                            "Email unavailable" %>
+
+                                                            </p>
+
+                                                        </div>
+
+                                        </div>
+
+
+                                        <% } else { %>
+
+                                            <p class="text-danger">
+
+                                                <i class="fa-solid fa-user-xmark"></i> Host Account Deleted
+
+                                            </p>
+
+                                            <% } %>
+
+
+                                                <!-- ================= BOOKED BY ================= -->
+
+                                                <h6 class="fw-bold mb-3 mt-3">
+
+                                                    <i class="fa-solid fa-user-check"></i> Booked By
+
+                                                </h6>
+
+
+                                                <% if(b.user){ %>
+
+
+                                                    <div class="d-flex align-items-center gap-3 mb-3">
+
+
+                                                        <!-- CUSTOMER PROFILE -->
+
+                                                        <% if(
+                                    b.user.profilePicture &&
+                                    b.user.profilePicture.url
+                                ){ %>
+
+                                                            <img src="<%= b.user.profilePicture.url %>" alt="Customer" class="rounded-circle" style="
+                                            width:60px;
+                                            height:60px;
+                                            object-fit:cover;
+                                        ">
+
+                                                            <% } else { %>
+
+                                                                <div class="rounded-circle bg-secondary text-white
+                                        d-flex align-items-center justify-content-center" style="
+                                            width:60px;
+                                            height:60px;
+                                            font-size:24px;
+                                        ">
+
+                                                                    <i class="fa-solid fa-user"></i>
+
+                                                                </div>
+
+                                                                <% } %>
+
+
+                                                                    <!-- CUSTOMER INFO -->
+
+                                                                    <div>
+
+                                                                        <p class="mb-1 fw-bold">
+
+                                                                            <%= b.user.username ||
+                                            "Username unavailable" %>
+
+                                                                        </p>
+
+
+                                                                        <p class="mb-0 text-muted">
+
+                                                                            <i class="fa-solid fa-envelope"></i>
+
+                                                                            <%= b.user.email ||
+                                            "Email unavailable" %>
+
+                                                                        </p>
+
+                                                                    </div>
+
+                                                    </div>
+
+
+                                                    <% } else { %>
+
+                                                        <p class="text-danger">
+
+                                                            <i class="fa-solid fa-user-xmark"></i> Deleted User
+
+                                                        </p>
+
+                                                        <% } %>
+
+
+                                                            <!-- ================= BOOKING DETAILS ================= -->
+
+                                                            <hr>
+
+
+                                                            <p>
+
+                                                                <b>Guests:</b>
+
+                                                                <%= b.guests %>
+
+                                                            </p>
+
+
+                                                            <p>
+
+                                                                <b>Room Type:</b>
+
+                                                                <span class="badge bg-primary">
+
+                                <%= b.roomPlan || "N/A" %>
+
+                            </span>
+
+                                                            </p>
+
+
+                                                            <p>
+
+                                                                <b>From:</b>
+
+                                                                <%= new Date(
+                                b.fromDate
+                            ).toDateString() %>
+
+                                                            </p>
+
+
+                                                            <p>
+
+                                                                <b>To:</b>
+
+                                                                <%= new Date(
+                                b.toDate
+                            ).toDateString() %>
+
+                                                            </p>
+
+
+                                                            <p>
+
+                                                                <b>Booking Status:</b>
+
+                                                                <span class="badge bg-success">
+
+                                <%= b.status ||
+                                    "Confirmed" %>
+
+                            </span>
+
+                                                            </p>
+
+
+                                                            <p>
+
+                                                                <b>Payment Status:</b>
+
+                                                                <span class="badge bg-success">
+
+                                <%= b.paymentStatus ||
+                                    "Paid" %>
+
+                            </span>
+
+                                                            </p>
+
+
+                                                            <hr>
+
+
+                                                            <!-- ================= PAYMENT INFO ================= -->
+
+                                                            <h6>
+
+                                                                <i class="fa-solid fa-credit-card"></i> Payment Info
+
+                                                            </h6>
+
+
+                                                            <p>
+
+                                                                Room Price: ₹
+                                                                <%= b.basePrice %>
+
+                                                            </p>
+
+
+                                                            <p>
+
+                                                                Platform Fee: ₹
+                                                                <%= b.platformFee %>
+
+                                                            </p>
+
+
+                                                            <p>
+
+                                                                GST: ₹
+                                                                <%= b.gst %>
+
+                                                            </p>
+
+
+                                                            <h5>
+
+                                                                Total Paid: ₹
+                                                                <%= b.totalPrice %>
+
+                                                            </h5>
+
+
+                                                            <p class="mb-1">
+
+                                                                <small>
+
+                                <b>Payment ID:</b>
+
+                                <%= b.paymentId ||
+                                    "N/A" %>
+
+                            </small>
+
+                                                            </p>
+
+
+                                                            <p class="mb-0">
+
+                                                                <small>
+
+                                <b>Order ID:</b>
+
+                                <%= b.orderId ||
+                                    "N/A" %>
+
+                            </small>
+
+                                                            </p>
+
 
                                 </div>
+
                             </div>
+
                         </div>
+
 
                         <% }) %>
 
                 </div>
-
 
     </div>

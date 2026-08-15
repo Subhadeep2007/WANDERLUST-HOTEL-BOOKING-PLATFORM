@@ -5,111 +5,407 @@
         <h2 class="mb-4 text-center">My Bookings</h2>
 
         <% if(bookings.length === 0){ %>
+
             <div class="alert alert-info text-center">
                 You have no bookings yet.
             </div>
+
             <% } %>
+
 
                 <div class="row">
 
                     <% bookings.forEach(b => { %>
 
                         <div class="col-md-6 col-lg-4">
+
                             <div class="card shadow-sm m-3">
 
-                                <!-- IMAGE -->
-                                <%
-                let imageUrl;
 
-                if (b.listing && typeof b.listing.image === "string") {
-                    imageUrl = b.listing.image;
-                } else if (b.listing && b.listing.image && b.listing.image.url) {
-                    imageUrl = b.listing.image.url;
-                } else {
-                    imageUrl = "https://images.unsplash.com/photo-1566073771259-6a8506099945";
-                }
-                %>
+                                <!-- ================= IMAGE ================= -->
+
+                                <%
+                        let imageUrl;
+
+                        if (b.listing && typeof b.listing.image === "string") {
+
+                            imageUrl = b.listing.image;
+
+                        } else if (
+                            b.listing &&
+                            b.listing.image &&
+                            b.listing.image.url
+                        ) {
+
+                            imageUrl = b.listing.image.url;
+
+                        } else {
+
+                            imageUrl =
+                                "https://images.unsplash.com/photo-1566073771259-6a8506099945";
+
+                        }
+                    %>
+
 
                                     <img src="<%= imageUrl %>" class="card-img-top" style="height:200px; object-fit:cover;">
 
+
                                     <div class="card-body">
 
+
+                                        <!-- ================= LISTING ================= -->
+
                                         <h4 class="card-title">
-                                            <%= b.listing ? b.listing.title : "Listing Removed" %>
+
+                                            <%= b.listing
+                                ? b.listing.title
+                                : "Listing Removed" %>
+
                                         </h4>
 
-                                        <p><b>Location:</b>
-                                            <%= b.listing ? b.listing.location : "N/A" %>
+
+                                        <p>
+                                            <b>Location:</b>
+
+                                            <%= b.listing
+                                ? b.listing.location
+                                : "N/A" %>
+
+                                                <% if(b.listing && b.listing.country){ %>
+
+                                                    ,
+                                                    <%= b.listing.country %>
+
+                                                        <% } %>
+
                                         </p>
-                                        <% if(b.listing && b.listing.geometry && b.listing.geometry.lat){ %>
-                                            <div id="map-<%= b._id %>" class="booking-map mb-3"></div>
+
+
+                                        <!-- ================= SELLER ================= -->
+
+                                        <hr>
+
+                                        <h6 class="fw-bold mb-3">
+
+                                            <i class="fa-solid fa-store"></i> Seller Details
+
+                                        </h6>
+
+
+                                        <% if(b.listing && b.listing.owner){ %>
+
+                                            <div class="d-flex align-items-center gap-3 mb-3">
+
+
+                                                <!-- SELLER PHOTO -->
+
+                                                <% if(
+                                    b.listing.owner.profilePicture &&
+                                    b.listing.owner.profilePicture.url
+                                ){ %>
+
+                                                    <img src="<%= b.listing.owner.profilePicture.url %>" alt="Seller Profile" class="rounded-circle" style="
+                                            width:60px;
+                                            height:60px;
+                                            object-fit:cover;
+                                        ">
+
+                                                    <% } else { %>
+
+                                                        <div class="rounded-circle bg-secondary text-white
+                                        d-flex align-items-center justify-content-center" style="
+                                            width:60px;
+                                            height:60px;
+                                            font-size:24px;
+                                        ">
+                                                            <i class="fa-solid fa-user"></i>
+                                                        </div>
+
+                                                        <% } %>
+
+
+                                                            <!-- SELLER INFO -->
+
+                                                            <div>
+
+                                                                <p class="mb-1 fw-bold">
+
+                                                                    <%= b.listing.owner.username ||
+                                            "Username unavailable" %>
+
+                                                                </p>
+
+
+                                                                <p class="mb-0 text-muted">
+
+                                                                    <i class="fa-solid fa-envelope"></i>
+
+                                                                    <%= b.listing.owner.email ||
+                                            "Email unavailable" %>
+
+                                                                </p>
+
+                                                            </div>
+
+                                            </div>
+
+
                                             <% } else { %>
-                                                <p class="text-muted">Map not available</p>
+
+                                                <p class="text-danger">
+
+                                                    <i class="fa-solid fa-user-xmark"></i> Seller account unavailable
+
+                                                </p>
+
                                                 <% } %>
 
-                                                    <p><b>From:</b>
-                                                        <%= new Date(b.fromDate).toDateString() %>
-                                                    </p>
 
-                                                    <p><b>To:</b>
-                                                        <%= new Date(b.toDate).toDateString() %>
-                                                    </p>
+                                                    <!-- ================= BOOKED BY ================= -->
 
-                                                    <p><b>Guests:</b>
-                                                        <%= b.guests %>
-                                                    </p>
+                                                    <h6 class="fw-bold mb-3 mt-3">
 
-                                                    <!-- ⭐ ROOM TYPE SHOW (THIS WAS YOUR MISSING PART) -->
-                                                    <p>
-                                                        <b>Room Type:</b>
-                                                        <span class="badge bg-primary">
-                            <%= b.roomPlan %>
-                        </span>
-                                                    </p>
+                                                        <i class="fa-solid fa-user-check"></i> Booking By
 
-                                                    <!-- STATUS -->
-                                                    <p>
-                                                        <b>Status:</b>
-                                                        <span class="badge bg-success">
-                            <%= b.status %>
-                        </span>
-                                                    </p>
+                                                    </h6>
 
-                                                    <hr>
 
-                                                    <h6 class="mt-2">Payment Details</h6>
+                                                    <div class="d-flex align-items-center gap-3 mb-3">
 
-                                                    <p>Room Price: ₹
-                                                        <%= b.basePrice %>
-                                                    </p>
-                                                    <p>Platform Fee: ₹
-                                                        <%= b.platformFee %>
-                                                    </p>
-                                                    <p>GST: ₹
-                                                        <%= b.gst %>
-                                                    </p>
 
-                                                    <h5>Total Paid: ₹
-                                                        <%= b.totalPrice %>
-                                                    </h5>
+                                                        <!-- CURRENT USER PHOTO -->
 
-                                                    <small class="text-muted">
-                        Payment ID: <%= b.paymentId %>
-                    </small>
+                                                        <% if(
+                                currentUser &&
+                                currentUser.profilePicture &&
+                                currentUser.profilePicture.url
+                            ){ %>
 
-                                                    <!-- CANCEL -->
-                                                    <form action="/bookings/cancel/<%= b._id %>?_method=DELETE" method="POST">
-                                                        <button type="submit" class="btn btn-danger mt-2">
-                            Cancel Booking
-                        </button>
-                                                    </form>
+                                                            <img src="<%= currentUser.profilePicture.url %>" alt="Your Profile" class="rounded-circle" style="
+                                        width:60px;
+                                        height:60px;
+                                        object-fit:cover;
+                                    ">
+
+                                                            <% } else { %>
+
+                                                                <div class="rounded-circle bg-secondary text-white
+                                    d-flex align-items-center justify-content-center" style="
+                                        width:60px;
+                                        height:60px;
+                                        font-size:24px;
+                                    ">
+                                                                    <i class="fa-solid fa-user"></i>
+                                                                </div>
+
+                                                                <% } %>
+
+
+                                                                    <div>
+
+                                                                        <p class="mb-1 fw-bold">
+
+                                                                            <%= currentUser.username %>
+
+                                                                        </p>
+
+
+                                                                        <p class="mb-0 text-muted">
+
+                                                                            <i class="fa-solid fa-envelope"></i>
+
+                                                                            <%= currentUser.email %>
+
+                                                                        </p>
+
+                                                                    </div>
+
+                                                    </div>
+
+
+                                                    <!-- ================= MAP ================= -->
+
+                                                    <% if(
+                            b.listing &&
+                            b.listing.geometry &&
+                            b.listing.geometry.lat
+                        ){ %>
+
+                                                        <div id="map-<%= b._id %>" class="booking-map mb-3"></div>
+
+                                                        <% } else { %>
+
+                                                            <p class="text-muted">
+                                                                Map not available
+                                                            </p>
+
+                                                            <% } %>
+
+
+                                                                <!-- ================= DATES ================= -->
+
+                                                                <p>
+                                                                    <b>From:</b>
+
+                                                                    <%= new Date(b.fromDate).toDateString() %>
+
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <b>To:</b>
+
+                                                                    <%= new Date(b.toDate).toDateString() %>
+
+                                                                </p>
+
+
+                                                                <!-- ================= GUESTS ================= -->
+
+                                                                <p>
+                                                                    <b>Guests:</b>
+
+                                                                    <%= b.guests %>
+
+                                                                </p>
+
+
+                                                                <!-- ================= ROOM TYPE ================= -->
+
+                                                                <p>
+
+                                                                    <b>Room Type:</b>
+
+                                                                    <span class="badge bg-primary">
+
+                                <%= b.roomPlan %>
+
+                            </span>
+
+                                                                </p>
+
+
+                                                                <!-- ================= STATUS ================= -->
+
+                                                                <p>
+                                                                    <b>Status:</b>
+
+                                                                    <% if(b.status === "Cancelled"){ %>
+
+                                                                        <span class="badge bg-danger">
+                                                                            <i class="fa-solid fa-ban"></i>
+                                                                            Cancelled
+                                                                        </span>
+
+                                                                        <% } else { %>
+
+                                                                            <span class="badge bg-success">
+                                                                            <i class="fa-solid fa-circle-check"></i>
+                                                                            <%= b.status %>
+                                                                        </span>
+
+                                                                            <% } %>
+                                                                </p>
+
+
+                                                                <hr>
+
+
+                                                                <!-- ================= PAYMENT ================= -->
+
+                                                                <h6 class="mt-2">
+
+                                                                    <i class="fa-solid fa-credit-card"></i> Payment Details
+
+                                                                </h6>
+
+
+                                                                <p>
+                                                                    Room Price: ₹
+                                                                    <%= b.basePrice %>
+                                                                </p>
+
+
+                                                                <p>
+                                                                    Platform Fee: ₹
+                                                                    <%= b.platformFee %>
+                                                                </p>
+
+
+                                                                <p>
+                                                                    GST: ₹
+                                                                    <%= b.gst %>
+                                                                </p>
+
+
+                                                                <h5>
+
+                                                                    Total Paid: ₹
+                                                                    <%= b.totalPrice %>
+
+                                                                </h5>
+
+
+                                                                <small class="text-muted">
+
+                            Payment ID:
+                            <%= b.paymentId || "N/A" %>
+
+                        </small>
+
+
+                                                                <br>
+
+
+                                                                <small class="text-muted">
+
+                            Order ID:
+                            <%= b.orderId || "N/A" %>
+
+                        </small>
+
+
+                                                                <!-- ================= INVOICE ================= -->
+
+                                                                <a href="/bookings/invoice/<%= b._id %>" class="btn btn-primary mt-3" target="_blank">
+
+                                                                    <i class="fa-solid fa-file-invoice"></i> View Receipt
+
+                                                                </a>
+
+
+                                                                <!-- ================= CANCEL ================= -->
+
+                                                                <% if(b.status !== "Cancelled"){ %>
+
+                                                                    <form action="/bookings/cancel/<%= b._id %>?_method=DELETE" method="POST" onsubmit="return confirm('⚠️ Are you sure you want to cancel this booking?');">
+
+                                                                        <button type="submit" class="btn btn-danger mt-3">
+
+                                                                            <i class="fa-solid fa-xmark"></i>
+                                                                            Cancel Booking
+
+                                                                        </button>
+
+                                                                    </form>
+
+                                                                    <% } else { %>
+
+                                                                        <div class="alert alert-danger mt-3 mb-0">
+
+                                                                            <i class="fa-solid fa-ban"></i> This booking has been cancelled.
+
+                                                                        </div>
+
+                                                                        <% } %>
+
 
                                     </div>
+
                             </div>
+
                         </div>
-
-
-
 
 
                         <% }) %>
@@ -117,92 +413,98 @@
                 </div>
 
 
-                <!-- Leaflet -->
+                <!-- ================= LEAFLET ================= -->
+
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-                <!-- <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-
-                        const bookings = JSON.parse('<%- JSON.stringify(bookings || []) %>');
-
-                        bookings.forEach(b => {
-
-                            if (!b.listing || !b.listing.geometry || !b.listing.geometry.lat) return;
-
-                            const mapId = "map-" + b._id;
-
-                            const map = L.map(mapId).setView(
-                                [b.listing.geometry.lat, b.listing.geometry.lng],
-                                13
-                            );
-
-                            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                                attribution: "&copy; OpenStreetMap contributors"
-                            }).addTo(map);
-
-                            L.marker([b.listing.geometry.lat, b.listing.geometry.lng])
-                                .addTo(map)
-                                .bindPopup("<b>" + b.listing.title + "</b><br>" + b.listing.location)
-                                .openPopup();
-                        });
-                    });
-                </script>
-
-                <style>
-                    .booking-map {
-                        height: 250px;
-                        width: 100%;
-                        border-radius: 10px;
-                        border: 1px solid #ddd;
-                    }
-                </style>
-
-    </div> -->
 
 
                 <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        const bookings = <%- JSON.stringify(bookings || []) %>;
+                    document.addEventListener(
+                        "DOMContentLoaded",
+                        function() {
 
-                        bookings.forEach(b => {
-                            if (!b.listing || !b.listing.geometry || !b.listing.geometry.lat) return;
+                            const bookings =
+                                <%- JSON.stringify(bookings || []) %>;
 
-                            const mapId = "map-" + b._id;
-                            const container = document.getElementById(mapId);
 
-                            if (!container) return; // Guard clause
+                            bookings.forEach(b => {
 
-                            const map = L.map(mapId).setView(
-                                [b.listing.geometry.lat, b.listing.geometry.lng],
-                                13
-                            );
+                                if (!b.listing ||
+                                    !b.listing.geometry ||
+                                    !b.listing.geometry.lat
+                                ) {
+                                    return;
+                                }
 
-                            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                                attribution: "&copy; OpenStreetMap contributors"
-                            }).addTo(map);
 
-                            L.marker([b.listing.geometry.lat, b.listing.geometry.lng])
-                                .addTo(map)
-                                .bindPopup("<b>" + b.listing.title + "</b><br>" + b.listing.location);
+                                const mapId =
+                                    "map-" + b._id;
 
-                            // ⭐ FORCE LEAFLET TO RE-CALCULATE MAP SIZE DIMENSIONS
-                            setTimeout(() => {
-                                map.invalidateSize();
-                            }, 200);
-                        });
-                    });
+
+                                const container =
+                                    document.getElementById(mapId);
+
+
+                                if (!container) {
+                                    return;
+                                }
+
+
+                                const map =
+                                    L.map(mapId).setView(
+                                        [
+                                            b.listing.geometry.lat,
+                                            b.listing.geometry.lng
+                                        ],
+                                        13
+                                    );
+
+
+                                L.tileLayer(
+                                    "https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                                        attribution: "&copy; OpenStreetMap contributors"
+                                    }
+                                ).addTo(map);
+
+
+                                L.marker([
+                                        b.listing.geometry.lat,
+                                        b.listing.geometry.lng
+                                    ])
+                                    .addTo(map)
+                                    .bindPopup(
+                                        "<b>" +
+                                        b.listing.title +
+                                        "</b><br>" +
+                                        b.listing.location
+                                    );
+
+
+                                setTimeout(() => {
+
+                                    map.invalidateSize();
+
+                                }, 200);
+
+                            });
+
+                        }
+
+                    );
                 </script>
+
+
                 <style>
                     .booking-map {
                         height: 250px;
                         width: 100%;
                         display: block;
-                        /* Ensures block layout dimensions apply */
                         z-index: 1;
-                        /* Keeps map tiles below modal popups but above card background */
                         border-radius: 10px;
                         border: 1px solid #ddd;
                     }
                 </style>
+
     </div>

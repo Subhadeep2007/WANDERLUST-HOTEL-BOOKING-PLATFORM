@@ -92,12 +92,43 @@
 
                     <% } else { %>
 
-                        <!-- USER EMAIL -->
+                        <!-- USERNAME + PROFILE PICTURE + EMAIL -->
                         <li class="nav-item me-3">
-                            <span class="navbar-text text-dark fw-semibold">
-                            <i class="fa-solid fa-user"></i>
-                            <%= currentUser.email %>
-                        </span>
+
+                            <div class="d-flex align-items-center gap-2">
+
+                                <% if(currentUser.profilePicture && currentUser.profilePicture.url){ %>
+
+                                    <img src="<%= currentUser.profilePicture.url %>" alt="Profile" class="rounded-circle" style="width:40px;height:40px;object-fit:cover;">
+
+                                    <% } else { %>
+
+                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                            <i class="fa-solid fa-user"></i>
+                                        </div>
+
+                                        <% } %>
+
+                                            <div class="d-flex flex-column">
+
+                                                <span class="fw-semibold text-dark">
+                <%= currentUser.username %>
+            </span>
+
+                                                <small class="text-muted">
+                <%= currentUser.email %>
+            </small>
+
+                                            </div>
+
+                            </div>
+
+                        </li>
+
+                        <li class="nav-item me-2">
+                            <a class="nav-link fw-semibold" href="/profile">
+                                <i class="fa-solid fa-user-circle"></i> Profile
+                            </a>
                         </li>
 
                         <!-- ROLE BADGE -->

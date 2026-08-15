@@ -1,0 +1,87 @@
+<% layout("/layouts/boilerplate") %>
+
+    <div class="container mt-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-6 col-lg-5">
+
+                <div class="card shadow-lg border-0">
+
+                    <div class="card-body text-center p-4">
+
+                        <h3 class="mb-4">My Profile</h3>
+
+                        <!-- PROFILE PICTURE -->
+                        <div class="mb-3">
+
+                            <% if(currentUser.profilePicture && currentUser.profilePicture.url){ %>
+
+                                <img src="<%= currentUser.profilePicture.url %>" alt="Profile Picture" class="rounded-circle" style="width:130px;height:130px;object-fit:cover;">
+
+                                <% } else { %>
+
+                                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto" style="width:130px;height:130px;font-size:50px;">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+
+                                    <% } %>
+
+                        </div>
+
+                        <!-- USERNAME -->
+                        <h4 class="mb-1">
+                            <%= currentUser.username %>
+                        </h4>
+
+                        <!-- EMAIL -->
+                        <p class="text-muted mb-3">
+                            <%= currentUser.email %>
+                        </p>
+
+                        <!-- ROLE -->
+                        <% if(currentUser.role === "admin"){ %>
+
+                            <span class="badge bg-danger">Admin</span>
+
+                            <% } else if(currentUser.role === "host"){ %>
+
+                                <span class="badge bg-success">Host</span>
+
+                                <% } else { %>
+
+                                    <span class="badge bg-secondary">Customer</span>
+
+                                    <% } %>
+
+                                        <hr class="my-4">
+
+                                        <!-- UPLOAD FORM -->
+                                        <form action="/profile-picture" method="POST" enctype="multipart/form-data">
+
+                                            <div class="mb-3 text-start">
+
+                                                <label class="form-label fw-semibold">
+                                Profile Picture
+                            </label>
+
+                                                <input type="file" name="profilePicture" class="form-control" accept="image/png,image/jpeg,image/jpg" required>
+
+                                            </div>
+
+                                            <button class="btn btn-primary w-100">
+                            <i class="fa-solid fa-upload"></i>
+                            Upload Profile Picture
+                        </button>
+
+                                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>

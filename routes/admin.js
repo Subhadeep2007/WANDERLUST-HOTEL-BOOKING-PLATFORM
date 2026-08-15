@@ -41,31 +41,53 @@ router.put("/reject/:id", isLoggedIn, isAdmin, async(req, res) => {
 
 
 // VIEW BOOKINGS
+// ================= VIEW ALL BOOKINGS =================
 router.get("/bookings", isLoggedIn, isAdmin, async(req, res) => {
 
     let bookings = await Booking.find({})
-        .populate({
-            path: "listing",
-            populate: { path: "owner" }
-        })
-        .populate("user")
-        .lean();
 
-    // safety if listing deleted
+    // ===== LISTING + SELLER =====
+    .populate({
+        path: "listing",
+        populate: {
+            path: "owner",
+            select: "username email profilePicture role"
+        }
+    })
+
+    // ===== CUSTOMER / BOOKED BY =====
+    .populate({
+        path: "user",
+        select: "username email profilePicture role"
+    })
+
+    .lean();
+
+
+    // ===== SAFETY IF LISTING DELETED =====
     bookings = bookings.map(b => {
+
         if (!b.listing) {
+
             b.listing = {
                 title: "Listing Removed",
                 location: "N/A",
                 country: "",
-                image: { url: "https://images.unsplash.com/photo-1566073771259-6a8506099945" },
-                owner: { email: "Host Deleted" }
+                image: {
+                    url: "https://images.unsplash.com/photo-1566073771259-6a8506099945"
+                },
+                owner: null
             };
+
         }
+
         return b;
     });
 
-    res.render("admin/bookings", { bookings });
+
+    res.render("admin/bookings", {
+        bookings
+    });
 });
 
 

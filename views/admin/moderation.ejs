@@ -47,14 +47,81 @@
                                                 <p class="text-muted">Location map not available</p>
                                                 <% } %>
 
-                                                    <!-- SAFE OWNER -->
-                                                    <p><b>Host:</b>
-                                                        <% if(l.owner && l.owner.email){ %>
-                                                            <%= l.owner.email %>
+                                                    <!-- SELLER DETAILS -->
+                                                    <div class="card border-0 bg-light mb-3">
+                                                        <div class="card-body">
+
+                                                            <h6 class="fw-bold mb-3">
+                                                                <i class="fa-solid fa-store"></i> Seller Details
+                                                            </h6>
+
+                                                            <% if(l.owner){ %>
+
+                                                                <div class="d-flex align-items-center gap-3">
+
+                                                                    <!-- PROFILE PICTURE -->
+                                                                    <% if(l.owner.profilePicture && l.owner.profilePicture.url){ %>
+
+                                                                        <img src="<%= l.owner.profilePicture.url %>" alt="Seller Profile" class="rounded-circle" style="width:65px;height:65px;object-fit:cover;">
+
+                                                                        <% } else { %>
+
+                                                                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:65px;height:65px;font-size:25px;">
+                                                                                <i class="fa-solid fa-user"></i>
+                                                                            </div>
+
+                                                                            <% } %>
+
+                                                                                <!-- SELLER INFORMATION -->
+                                                                                <div>
+
+                                                                                    <div class="fw-bold">
+                                                                                        <%= l.owner.username || "Username unavailable" %>
+                                                                                    </div>
+
+                                                                                    <div class="text-muted">
+                                                                                        <i class="fa-solid fa-envelope"></i>
+                                                                                        <%= l.owner.email || "Email unavailable" %>
+                                                                                    </div>
+
+                                                                                    <div class="mt-1">
+
+                                                                                        <% if(l.owner.role === "host"){ %>
+
+                                                                                            <span class="badge bg-success">
+                                Host
+                            </span>
+
+                                                                                            <% } else if(l.owner.role === "admin"){ %>
+
+                                                                                                <span class="badge bg-danger">
+                                Admin
+                            </span>
+
+                                                                                                <% } else { %>
+
+                                                                                                    <span class="badge bg-secondary">
+                                Customer
+                            </span>
+
+                                                                                                    <% } %>
+
+                                                                                    </div>
+
+                                                                                </div>
+
+                                                                </div>
+
                                                                 <% } else { %>
-                                                                    <span class="text-danger">Host Account Deleted</span>
+
+                                                                    <div class="text-danger">
+                                                                        <i class="fa-solid fa-user-xmark"></i> Host Account Deleted
+                                                                    </div>
+
                                                                     <% } %>
-                                                    </p>
+
+                                                        </div>
+                                                    </div>
 
                                                     <p><b>Price:</b> ₹
                                                         <%= l.price %> / night</p>

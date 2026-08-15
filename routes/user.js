@@ -9,7 +9,10 @@ const {
     saveReditectUrl
 } = require("../middleware.js")
 
+const multer = require("multer");
+const { storage } = require("../utils/cloudinary");
 
+const upload = multer({ storage });
 
 const {
     isLoggedIn
@@ -25,6 +28,9 @@ const Review = require("../models/review");
 
 
 const validateSignup = (req, res, next) => {
+
+    console.log("SIGNUP BODY:", req.body);
+
     const { error } = signupSchema.validate(req.body);
 
     if (error) {
@@ -63,7 +69,7 @@ router.get("/signup", (req, res) => {
 // send OTP
 router.post("/signup", validateSignup, async(req, res) => {
     try {
-        const { email, role } = req.body;
+        const { username, email, role } = req.body;
         req.session.signupRole = role || "customer";
 
         if (!email) {
@@ -83,7 +89,9 @@ router.post("/signup", validateSignup, async(req, res) => {
 
         // store temporary data in session
         req.session.tempUser = {
+            username: username.trim(),
             email: lowerEmail,
+
             otp: otp,
             otpExpire: Date.now() + 300000
         };
@@ -129,6 +137,8 @@ router.post("/verify-email", validateOtp, async(req, res) => {
 
     // mark verified
     req.session.verifiedEmail = email.toLowerCase();
+    req.session.verifiedUsername = tempUser.username;
+
     delete req.session.tempUser;
 
     req.flash("success", "Email verified! Now create password.");
@@ -157,7 +167,7 @@ router.post("/set-password", validatePassword, async(req, res) => {
 
     // create user AFTER verification
     const newUser = new User({
-        username: email.toLowerCase(),
+        username: req.session.verifiedUsername,
         email: email.toLowerCase(),
         isVerified: true,
         role: req.session.signupRole || "customer"
@@ -168,6 +178,7 @@ router.post("/set-password", validatePassword, async(req, res) => {
 
 
     delete req.session.verifiedEmail;
+    delete req.session.verifiedUsername;
 
     req.flash("success", "Account created! Please login.");
     res.redirect("/login");
@@ -312,7 +323,72 @@ router.post("/login-otp", async(req, res, next) => {
 });
 
 
+// ================= PROFILE =================
 
+router.get("/profile", isLoggedIn, async(req, res) => {
+    try {
+
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            req.flash("error", "User not found");
+            return res.redirect("/listings");
+        }
+
+        res.render("users/profile", {
+            user
+        });
+
+    } catch (err) {
+
+        console.log("PROFILE ERROR:", err);
+
+        req.flash("error", "Unable to load profile");
+        res.redirect("/listings");
+    }
+});
+
+
+// ================= PROFILE PICTURE UPLOAD =================
+
+router.post(
+    "/profile-picture",
+    isLoggedIn,
+    upload.single("profilePicture"),
+    async(req, res) => {
+        try {
+
+            if (!req.file) {
+                req.flash("error", "Please select a profile picture");
+                return res.redirect("/profile");
+            }
+
+            const user = await User.findById(req.user._id);
+
+            if (!user) {
+                req.flash("error", "User not found");
+                return res.redirect("/profile");
+            }
+
+            user.profilePicture = {
+                url: req.file.path,
+                filename: req.file.filename
+            };
+
+            await user.save();
+
+            req.flash("success", "Profile picture updated successfully!");
+            res.redirect("/profile");
+
+        } catch (err) {
+
+            console.log("PROFILE PICTURE ERROR:", err);
+
+            req.flash("error", "Profile picture upload failed");
+            res.redirect("/profile");
+        }
+    }
+);
 //  LOGOUT 
 
 router.get("/logout", (req, res, next) => {
