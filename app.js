@@ -156,7 +156,24 @@ async function connectDB() {
 
     console.log("✅ Connected to MongoDB Atlas");
 }
+// ================= CONNECT DATABASE BEFORE REQUEST =================
 
+app.use(async(req, res, next) => {
+
+    try {
+
+        await connectDB();
+
+        next();
+
+    } catch (err) {
+
+        console.error("❌ DATABASE CONNECTION ERROR:", err);
+
+        next(err);
+    }
+
+});
 
 // ================= VERCEL EXPORT =================
 
